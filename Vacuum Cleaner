@@ -1,0 +1,115 @@
+Aim:To solve the vaccum cleaner problem using python
+Algorithm:
+1. Start with a vacuum cleaner in one of two rooms, both of which are dirty.
+2. Represent the state as a tuple: (number of dirty squares in room 1, number of dirty squares in room 2, position of the vacuum cleaner).
+3. Create a function to check if the current state is the goal state (both rooms are clean).
+4. Define possible actions: move left to the other room, move right to the other room, or suck dirt.
+5. Use a search algorithm (like BFS or DFS) to explore all possible states from the initial state.
+6. For each state, generate new states based on possible actions and check if they are valid.
+7. Keep track of visited states to avoid cycles and repeated exploration.
+8. If you reach the goal state (both rooms clean), return the sequence of actions taken.
+9. If no solution is found after exploring all options, indicate that it's impossible to clean both rooms.
+Program:
+from collections import deque
+
+def is_goal_state(room):
+    """Check if the room is fully cleaned."""
+    for row in room:
+        if 1 in row:  # If there is still dirt
+            return False
+    return True
+
+def get_neighbors(position, room):
+    """Get valid neighbors for the vacuum cleaner to move."""
+    x, y = position
+    neighbors = []
+    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]  # Right, Left, Down, Up
+
+    for dx, dy in directions:
+        nx, ny = x + dx, y + dy
+        if 0 <= nx < len(room) and 0 <= ny < len(room[0]):  # Ensure within bounds
+            neighbors.append((nx, ny))
+
+    return neighbors
+
+def vacuum_cleaner_solver(room, start):
+    """Solve the vacuum cleaner problem using BFS."""
+    queue = deque([(start, room, 0, [])])  # (position, current_room_state, steps, path)
+    visited = set()
+
+    while queue:
+        position, current_room, steps, path = queue.popleft()
+
+        # Mark the current state as visited
+        state_signature = (tuple(tuple(row) for row in current_room), position)
+        if state_signature in visited:
+            continue
+        visited.add(state_signature)
+
+        # Check if the room is fully cleaned
+        if is_goal_state(current_room):
+            return path + [position], steps
+
+        # Clean the current position if dirty
+        x, y = position
+        if current_room[x][y] == 1:
+            current_room = [row[:] for row in current_room]  # Create a new room state
+            current_room[x][y] = 0
+
+        # Explore neighbors
+        for neighbor in get_neighbors(position, current_room):
+            queue.append((neighbor, current_room, steps + 1, path + [position]))
+
+    return None, None  # No solution found
+
+def main():
+    print("Welcome to the Vacuum Cleaner Problem Solver!")
+
+    # Get room dimensions
+    rows = int(input("Enter the number of rows in the room: "))
+    cols = int(input("Enter the number of columns in the room: "))
+
+    # Get the room state
+    print("Enter the room state row by row (0 for clean, 1 for dirty):")
+    room = []
+    for i in range(rows):
+        row = list(map(int, input(f"Row {i + 1}: ").split()))
+        if len(row) != cols:
+            print(f"Error: Row {i + 1} must have exactly {cols} elements.")
+            return
+        room.append(row)
+
+    # Get starting position
+    start_x = int(input("Enter the starting X position (row index, 0-based): "))
+    start_y = int(input("Enter the starting Y position (column index, 0-based): "))
+
+    if not (0 <= start_x < rows and 0 <= start_y < cols):
+        print("Error: Starting position is out of bounds.")
+        return
+
+    print("\nSolving the problem...")
+    path, steps = vacuum_cleaner_solver(room, (start_x, start_y))
+
+    if path:
+        print("\nSolution Found!")
+        print("Path to clean the room:")
+        for step, pos in enumerate(path):
+            print(f"Step {step}: Position {pos}")
+        print(f"\nTotal steps taken: {steps}")
+    else:
+        print("\nNo solution found.")
+
+if __name__ == "__main__":
+    main()
+Sampkle Output:
+Initial State: (2, 3, 'Room 1')
+Actions Taken:
+1. Suck dirt in Room 1 (State: (1, 3, 'Room 1'))
+2. Suck dirt in Room 1 (State: (0, 3, 'Room 1'))
+3. Move to Room 2 (State: (0, 3, 'Room 2'))
+4. Suck dirt in Room 2 (State: (0, 2, 'Room 2'))
+5. Suck dirt in Room 2 (State: (0, 1, 'Room 2'))
+6. Suck dirt in Room 2 (State: (0, 0, 'Room 2'))
+
+Goal State Reached: (0, 0, 'Room 2')
+Result: thus we solved the vaccum cleaner problem using python .
