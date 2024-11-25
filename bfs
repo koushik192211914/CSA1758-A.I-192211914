@@ -1,0 +1,52 @@
+Aim: To Implement the BFS problem using python.
+Algorithm:
+1. Create a set to keep track of visited nodes.  
+2. Create a queue and enqueue the starting node.  
+3. Create a list to store the order of traversal.  
+4. While the queue is not empty:  
+   - Dequeue a node from the front of the queue.  
+   - If the node has not been visited:  
+     - Mark it as visited.  
+     - Add it to the traversal order.  
+     - For each unvisited neighbor of the node:  
+       - Enqueue the neighbor.  
+5. Return the list containing the order of traversal.
+Program:
+from collections import deque
+
+def bfs(graph, start):
+    visited = set()  # Set to keep track of visited nodes
+    queue = deque([start])  # Initialize the queue with the starting node
+    bfs_order = []  # List to store the order of traversal
+
+    while queue:
+        node = queue.popleft()  # Dequeue a node from the front of the queue
+        if node not in visited:
+            visited.add(node)  # Mark the node as visited
+            bfs_order.append(node)  # Add it to the BFS order
+
+            # Enqueue all unvisited neighbors
+            for neighbor in graph[node]:
+                if neighbor not in visited:
+                    queue.append(neighbor)
+
+    return bfs_order
+
+# Example graph represented as an adjacency list
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
+
+# Perform BFS starting from node 'A'
+bfs_result = bfs(graph, 'A')
+
+# Print the result
+print("BFS Traversal Order:", bfs_result)
+Sample Output:
+BFS Traversal Order: ['A', 'B', 'C', 'D', 'E', 'F']
+Result:thus we implemented bfs problem using python.
