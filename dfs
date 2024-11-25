@@ -1,0 +1,48 @@
+Aim:To Solve problem using DFS problem using python.
+Algorithm:
+1. Create a set to keep track of visited nodes.  
+2. Create a stack and push the starting node onto the stack.  
+3. Create a list to store the order of traversal.  
+4. While the stack is not empty:  
+   - Pop a node from the top of the stack.  
+   - If the node has not been visited:  
+     - Mark it as visited.  
+     - Add it to the traversal order.  
+     - For each unvisited neighbor of the node:  
+       - Push the neighbor onto the stack.  
+5. Return the list containing the order of traversal.
+Program:
+def dfs(graph, start, visited=None, dfs_order=None):
+    if visited is None:
+        visited = set()  # Set to keep track of visited nodes
+    if dfs_order is None:
+        dfs_order = []  # List to store the order of traversal
+
+    visited.add(start)  # Mark the starting node as visited
+    dfs_order.append(start)  # Add it to the DFS order
+
+    # Recur for all unvisited neighbors
+    for neighbor in graph[start]:
+        if neighbor not in visited:
+            dfs(graph, neighbor, visited, dfs_order)
+
+    return dfs_order
+
+# Example graph represented as an adjacency list
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
+
+# Perform DFS starting from node 'A'
+dfs_result = dfs(graph, 'A')
+
+# Print the result
+print("DFS Traversal Order:", dfs_result)
+Sample output:
+DFS Traversal Order: ['A', 'B', 'D', 'E', 'F', 'C']
+Result:thus we solved dfs problem using python.
